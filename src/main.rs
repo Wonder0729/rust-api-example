@@ -24,10 +24,19 @@ async fn main() {
         .and(warp::body::json())
         .and(with_items_db(items_db.clone()))
         .and_then(handlers::create_shopping_list_item)
-            .or(warp::path!("shopping_list_item" / usize)
+        .or(warp::path!("shopping_list_item" / usize)
             .and(warp::get())
             .and(with_items_db(items_db.clone()))
-            .and_then(handlers::get_shopping_list_item_by_id));
+            .and_then(handlers::get_shopping_list_item_by_id))
+        .or(warp::path!("shopping_list_item" / usize)
+            .and(warp::put())
+            .and(warp::body::json())
+            .and(with_items_db(items_db.clone()))
+            .and_then(handlers::update_shopping_list_item_by_id))
+        .or(warp::path!("shopping_list_item" / usize)
+            .and(warp::delete())
+            .and(with_items_db(items_db.clone()))
+            .and_then(handlers::delete_shopping_list_item_by_id));
 
     let routes = root
         .or(shopping_list_items_route)
